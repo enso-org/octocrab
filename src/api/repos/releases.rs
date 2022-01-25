@@ -1,4 +1,4 @@
-use crate::models::AssetId;
+use crate::models::{AssetId, ReleaseId};
 
 use super::*;
 
@@ -145,6 +145,17 @@ impl<'octo, 'r> ReleasesHandler<'octo, 'r> {
             owner = self.parent.owner,
             repo = self.parent.repo,
             tag = tag,
+        );
+
+        self.parent.crab.get(url, None::<&()>).await
+    }
+
+    pub async fn get_by_id(&self, release_id: ReleaseId) -> crate::Result<models::repos::Release> {
+        let url = format!(
+            "repos/{owner}/{repo}/releases/{release_id}",
+            owner = self.parent.owner,
+            repo = self.parent.repo,
+            release_id = release_id,
         );
 
         self.parent.crab.get(url, None::<&()>).await
