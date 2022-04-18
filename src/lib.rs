@@ -161,7 +161,7 @@ use std::fmt;
 use std::sync::{Arc, RwLock};
 
 use once_cell::sync::Lazy;
-use reqwest::{header::HeaderName, StatusCode, Url};
+use reqwest::{Client, header::HeaderName, StatusCode, Url};
 use serde::Serialize;
 use snafu::*;
 
@@ -412,7 +412,7 @@ enum AuthState {
 /// The GitHub API client.
 #[derive(Debug, Clone)]
 pub struct Octocrab {
-    client: reqwest::Client,
+    pub client: reqwest::Client,
     pub base_url: Url,
     auth_state: AuthState,
 }
