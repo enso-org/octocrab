@@ -155,7 +155,6 @@ pub struct Content {
     pub name: String,
     pub path: String,
     pub sha: String,
-    pub encoding: String,
     /// File content, Base64 encoded
     pub content: Option<String>,
     pub size: i64,
