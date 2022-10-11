@@ -1,5 +1,5 @@
 //! GitHub Actions
-use snafu::ResultExt;
+use snafu::{GenerateImplicitData, ResultExt};
 
 use crate::etag::{EntityTag, Etagged};
 use crate::models::{
@@ -7,7 +7,7 @@ use crate::models::{
     ArtifactId, RepositoryId, RunId,
     workflows::WorkflowDispatch
 };
-use crate::{params, FromResponse, Octocrab, Page};
+use crate::{params, FromResponse, Octocrab, Page, Error};
 use hyperx::header::{ETag, IfNoneMatch, TypedHeaders};
 use reqwest::{header::HeaderMap, Method, StatusCode};
 
@@ -123,7 +123,10 @@ impl<'octo> WorkflowDispatchBuilder<'octo> {
             self.crab.absolute_url(route)?,
             Some(&self.data),
         )
-        .await?;
+        .await?.error_for_status().map_err(|source| crate::error::Error::Http {
+            source,
+            backtrace: snafu::Backtrace::generate(),
+        })?;
 
         Ok(())
     }
